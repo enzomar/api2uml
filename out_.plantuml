@@ -1,0 +1,36 @@
+@startuml
+class NodeA {
+NodeB
+}
+class NodeB {
+}
+class NodeC {
+}
+class NodeD {
+}
+class NodeE {
+}
+class NodeF {
+}
+class NodeG {
+}
+class NodeH {
+}
+class NodeI {
+}
+class NodeJ {
+}
+class NodeK {
+}
+class NodeL {
+}
+NodeC -- NodeD
+NodeB -- NodeE
+NodeB -- NodeC
+NodeG -- NodeB
+NodeG -- NodeI
+NodeF -- NodeG
+NodeH -- NodeI
+NodeA -- NodeB
+NodeJ -- NodeK
+@enduml
