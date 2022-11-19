@@ -13,7 +13,7 @@ def _mapper(graph):
     origins.add(link.origin)
     destinations.add(link.dest)
   
-    if link not in linkmap:
+    if link.origin not in linkmap:
       linkmap[link.origin] = set()
     linkmap[link.origin].add(link)
 

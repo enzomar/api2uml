@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <title>API2UML</title>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap.min.css')}}">
+      <link href="{{ url_for('static',filename='docs.css')}}" rel="stylesheet">
+      <script src="{{ url_for('static',filename='bootstrap.bundle.min.js')}}
+"></script>
+
+      <style>
+ .row {
+    display: block;
+}
+      </style>
+      
+   </head>
+   <body>
+      <div class="container">
+         <!-- Content here -->
+         <div class="row">
+            <h1>API2UML</h1>
+         </div>
+         <br/>
+         <div class="row">
+            <div class="input-group">
+               <select class="custom-select" id="inputSelectRoot" aria-label="inputSelectRoot">
+                 <option selected>*</option>
+               </select>
+               <div class="input-group-append">
+                 <button id="drawButton" class="btn btn-outline-secondary" type="button">Draw</button>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="form-group">
+               <textarea class="form-control" id="swaggertextarea" rows="8" style="min-width: 100%"></textarea>
+            </div>
+
+         </div>
+         <br/>
+         <div class="row">
+            <img id="diagram" alt="Diagram will appear here.">
+               
+         </div>
+      </div>
+      <script src="{{ url_for('static',filename='popper.min.js') }}"></script>
+      <script src="{{ url_for('static',filename='jquery-3.6.1.min.js') }}"></script>
+      <script src="{{ url_for('static',filename='plantuml-encoder.min.js') }}"></script>
+      <script>
+      
+      refreshNodes();
+
+      function refreshNodes(arrayOfNodes = []) {
+         var nodeDropDrawn = $('#inputSelectRoot');
+
+         nodeDropDrawn.empty();
+         console.log(arrayOfNodes);
+         nodeDropDrawn.append(
+              $('<option selected></option>').val("*").html("*")
+            );
+         
+         $.each(arrayOfNodes, function(val, text) {
+            nodeDropDrawn.append(
+              $('<option></option>').val(text).html(text)
+            );
+         });
+
+         return false;
+      };
+
+      function render(uml) {
+         var src = "http://localhost:8080/img/" + window.plantumlEncoder.encode( uml );
+         console.log(src);
+         $("#diagram").attr("src", src);
+         return false;
+      };
+
+      $('#drawButton').on('click', function (e) {
+            //your awesome code here
+            var swagger = $('#swaggertextarea').val();
+            var swaggerBase64 = btoa(swagger);
+            let data = { "schema": swaggerBase64};
+
+            var nodeSelected = $('#inputSelectRoot').val();
+
+            var url = "/uml"
+            if ( nodeSelected !== "*" ){
+               url = url + '?' +
+                new URLSearchParams({ node: nodeSelected }).toString();
+            }
+
+            fetch(url, {
+              method: "POST",
+              headers: {'Content-Type': 'application/json'}, 
+              body: JSON.stringify(data)
+            })
+            .then((response => response.json()))
+            .then((data => {
+              refreshNodes(data['nodes'])
+              render(atob(data['uml']));
+            }));
+           
+
+         });
+
+         $("uml").each(function() {
+           var src = "http://localhost:8080/img/" + window.plantumlEncoder.encode( $(this).text() )
+           $(this).replaceWith($('<img>').attr('src', src));
+         });
+         
+      </script>
+   </body>
+</html>

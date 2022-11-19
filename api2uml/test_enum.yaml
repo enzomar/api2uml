@@ -1,0 +1,92 @@
+swagger: '2.0'
+definitions:
+  DocumentFormat:
+    type: string
+    example: PDF
+    description: 'The type of document, such as a PDF or PNG.'
+    enum:
+      - PDF
+      - PNG
+  AncillaryShared:
+      type: object
+      description: >-
+        An ancillary is a product which may be linked to admissions in a single or
+        a separate offer and enhance their value for the customer. Examples of
+        Ancillary Services include on-board meals, special assistance, Wi-Fi, bike
+        space. Some ancillaries may be supplied by a different provider than the
+        Rail Service Provider supplying the admission with which they are bundled.
+        The linking business rules are owned by the Rail Service Provider
+        supplying the admission. For an included ancillary the product code and
+        the description will be returned. For non-hosted ancillaries, like Espace
+        Pro, the description will be the one returned by the external provider.
+      required:
+        - id
+        - classification
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Automatically generated.
+          example: 71def814-0a90-4271-bc56-954ffa43f5ff
+        classification:
+          type: string
+          description: >-
+            In case of INCLUDED ancillaries price and pricingMode are not returned
+            since the price is already included in the admission. Also the
+            product's information is limited (for instance the product code is not
+            returned since there is no product associate to the INCLUDED
+            ancillaries).
+          example: OPTIONAL
+          enum:
+            - INCLUDED
+            - OPTIONAL
+            - STANDALONE
+        priceDetails:
+          $ref: '#/definitions/Price'
+        pricingMode:
+          description: Way in which the price will be calculated.
+          readOnly: true
+          type: string
+          example: INDIVIDUAL
+          enum:
+            - INDIVIDUAL
+            - COLLECTIVE
+        category:
+          description: Code for the ancillary category.
+          type: string
+          example: '014'
+        tags:
+          description: Sub category of the ancillary. The same value as in data management.
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        product:
+          $ref: '#/definitions/Product'
+        orderItemId:
+          $ref: '#/definitions/Idhref'
+        groupReference:
+          type: string
+          description: >-
+            Common reference used to identify order items that have been booked or
+            grouped together.
+          format: uuid
+          example: 71def814-0a90-4271-bc56-954ffa43f5ff
+        location:
+          $ref: '#/definitions/Location'
+        locationType:
+          description: The station type could be either an origin or a destination.
+          default: DESTINATION
+          example: DESTINATION
+          type: string
+          enum:
+            - ORIGIN
+            - DESTINATION
+        countries:
+          description: Refers to the country where the pass is valid.
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            pattern: '^[a-zA-Z]{2}$'
+            example: BE
