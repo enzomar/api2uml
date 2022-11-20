@@ -1,9 +1,0 @@
-import api2uml.graph
-import api2uml.link
-import api2uml.node
-import api2uml.parser
-import api2uml.parser_2_0
-import api2uml.parser_3_0_0
-import api2uml.umldrawer
-import api2uml.cluster
-import api2uml.api2uml

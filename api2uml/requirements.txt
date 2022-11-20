@@ -2,3 +2,4 @@ pyyaml
 plantweb
 werkzeug
 flask
+psutil

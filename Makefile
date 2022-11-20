@@ -62,7 +62,8 @@ tar: setup ## create a tar package (needs GIT repo)
 	git archive --format=tar.gz -o api2uml.tar.gz HEAD -v 
 
 deploy: ## Deploy to deta (needs deta login)
-	cd api2uml; ~/.deta/bin/deta deploy 
+	cd api2uml; ~/.deta/bin/deta deploy
+	cd api2uml; ~/.deta/bin/deta details
 
 clean:
 	# clean up
