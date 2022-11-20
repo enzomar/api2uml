@@ -149,7 +149,7 @@ body.waiting * {
       var serialize_graph = null;
 
       $(document).ready(function () {
-         refreshNodes();
+         refreshNodes([],[]);
 
       });
 
@@ -173,7 +173,7 @@ body.waiting * {
          rawFile.send(null);
       }
 
-      function refreshNodes(arrayOfNodes = []) {
+      function refreshNodes(arrayOfNodes, roots) {
          var nodeDropDrawn = $('#inputSelectRoot');
          nodeDropDrawn.empty();
          nodeDropDrawn.append(
@@ -181,9 +181,14 @@ body.waiting * {
          );
 
          $.each(arrayOfNodes, function (val, text) {
-            nodeDropDrawn.append(
-               $('<option></option>').val(text).html(text)
-            );
+            if (roots.includes(text)){
+               nodeDropDrawn.append(
+               $('<option></option>').val(text).html('(R) '+text))
+            } else {
+               nodeDropDrawn.append(
+               $('<option></option>').val(text).html(text))
+            }
+            
          });
          return false;
       };
@@ -277,7 +282,7 @@ body.waiting * {
          })
             .then((response => response.json()))
             .then((data => {
-               refreshNodes(data['nodes']);
+               refreshNodes(data['nodes'], data['inspect']['roots']);
                serialize_graph = data["graph"];
                n = data['nodes'].length;
                m = data['inspect']['stats']['max_depth']
