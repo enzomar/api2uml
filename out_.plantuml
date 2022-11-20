@@ -1,409 +1,139 @@
 @startuml
-class TravelOffer {
-{static} id
-itinerary
-offers
-segmentsWithoutProducts
+class Paginator {
+nextPageSelector
+pageNum
 }
-TravelOffer --> Location
-class Location {
-{static} code
-name
-geoCode
+class action {
 }
-Location --> GeoCode
-TravelOffer --> Itinerary
-class Itinerary {
-segments
-informationMessages
+class fetchrequest {
+actions
+ignoreHTTPStatusErrCodes
+initialCookies
+output
+> buffer
+> file
+proxy
+{static} type
+> base
+> chrome
+{static} url
+waitDelay
 }
-Itinerary *-- ItineraryBasic
-class ItineraryBasic {
-{static} id
-reconstructionId
-{static} origin
-{static} destination
-{static} departureDateTime
-{static} arrivalDateTime
-{static} numberOfChanges
-duration
-bookableStatus
-mayNotBeRideable
-bookableStarting
-basicTransportInformation
-includesANightTrain
-co2Emission
-ecoUrl
-realDepartureDateTime
-realArrivalDateTime
-containsRealTimeInfo
+class field {
+{static} attrs
+details
+filters
+{static} name
+{static} selector
+{static} type
 }
-ItineraryBasic --> Reconstruction
-ItineraryBasic --> Location
-Itinerary o-- Segment
-class Segment {
-{static} id
-{static} transportType
-{static} departureStation
-{static} departureDateTime
-{static} arrivalStation
-{static} arrivalDateTime
-duration
-vehicle
-carrierCode
-servicesOnBoard
-co2Emission
-scheduleToBeConfirmed
-departureTrack
-arrivalTrack
-distance
-stopStations
-bookableStatus
-bookableStarting
-realDepartureDateTime
-realDepartureTrack
-realArrivalDateTime
-realArrivalTrack
-informationMessages
-status
-}
-Segment o-- StopStation
-class StopStation {
-{static} station
-arrivalDateTime
-arrivalTrack
-departureDateTime
-departureTrack
-borderPoint
-realArrivalDateTime
-realArrivalTrack
-realDepartureDateTime
-realDepartureTrack
-entrain
-detrain
-}
-StopStation --> Location
-Segment o-- InformationMessage
-Segment --> Vehicle
-Segment --> Location
-Segment o-- ServiceOnBoard
-Itinerary o-- InformationMessage
-TravelOffer o-- OfferProposed
-class OfferProposed {
-travelers
-accommodations
-admissions
-ancillaries
-}
-OfferProposed o-- Traveler
-class Traveler {
+class initialCookie {
+domain
+expirationDate
+hostOnly
+httpOnly
 id
-dateOfBirth
-reductions
-contacts
-loyaltyCards
-retrievedFromProfile
-}
-Traveler --> Reduction
-class Reduction {
-reductionCards
-corporateCodes
-campaignCodes
-nonAgeRelatedTravelerCategories
-}
-Reduction o-- ReductionCard
-Traveler *-- Name
-Traveler --> Contact
-class Contact {
-emailAddresses
-phoneNumbers
-mailingAddresses
-}
-Contact o-- EmailAddress
-Contact o-- PhoneNumber
-Contact o-- Address
-class Address {
-streetNumber
-streetNumberSuffix
-streetName
-buildingName
-appartmentNumber
-cityName
-postalCode
-county
-stateProvince
-countryName
 name
-countryCode
+path
+sameSite
+> unspecified
+> strict
+> lax
+> no_restriction
+secure
+session
+storeID
+value
 }
-Address --> Name
-Traveler o-- LoyaltyCard
-OfferProposed o-- Admission
-class Admission {
-includedAccommodationIds
-optionalAccommodationIds
-includedAncillaryIds
-optionalAncillaryIds
-products
-segmentsInOverbooking
+class parserequest {
+commonParent
+{static} fields
+{static} format
+> csv
+> json
+> jsonl
+> excel
+> xml
+{static} name
+paginator
+path
+request
 }
-Admission o-- Product
-class Product {
-description
-linkedSegments
-travelClass
-travelClassLabel
-ticketingOptions
+class serprequest {
+fields
+{static} format
+> csv
+> json
+> jsonl
+> excel
+> xml
+{static} name
+pageNum
+{static} proxy
+{static} type
+{static} url
 }
-Product --> TravelClassLabel
-Product *-- ProductShared
-class ProductShared {
-code
-flexibility
-productCharacteristics
-family
-travelersRestrictions
-travelPeriodRestrictions
-conditions
-tags
-serviceProvider
-appliedReductions
+class url2pdfrequest {
+actions
+ignoreHTTPStatusErrCodes
+initialCookies
+landscape
+marginBottom
+marginLeft
+marginRight
+marginTop
+output
+> buffer
+> file
+pageRanges
+paperSize
+> A3
+> A4
+> A5
+> A6
+> Letter
+> Legal
+> Tabloid
+printBackground
+printHeaderFooter
+proxy
+scale
+{static} url
+waitDelay
 }
-ProductShared --> Reduction
-Admission o-- Idhref
-Admission *-- AdmissionShared
-class AdmissionShared {
-{static} id
-providerReference
-travelerReferences
-priceDetails
-pricingMode
-> INDIVIDUAL
-> COLLECTIVE
-availableSlots
+class url2screenshotrequest {
+actions
+clipSelector
+format
+> png
+> jpeg
+fullPage
+height
+ignoreHTTPStatusErrCodes
+initialCookies
+offsetx
+offsety
+output
+> buffer
+> file
+printBackground
+proxy
+quality
+scale
+{static} url
+waitDelay
+width
 }
-AdmissionShared --> Price
-class Price {
-currency
-total
-originalTotalAndCurrency
-conversionRate
-totalTaxes
-originalTotalTaxes
-totalFees
-originalTotalFees
-taxes
-}
-Price o-- Tax
-class Tax {
-originalAmountAndCurrency
-conversionRate
-code
-nature
-percentage
-included
-description
-}
-Tax *-- Money
-Tax --> Money
-Price --> Money
-OfferProposed o-- Accommodation
-class Accommodation {
-selectedPreferences
-}
-Accommodation *-- AccommodationShared
-class AccommodationShared {
-{static} id
-{static} classification
-> INCLUDED
-> OPTIONAL
-> STANDALONE
-description
-priceDetails
-pricingMode
-> INDIVIDUAL
-> COLLECTIVE
-category
-product
-availableSlots
-travelerReferences
-segmentsInOverbooking
-}
-AccommodationShared --> Price
-AccommodationShared --> Product
-Accommodation o-- AccommodationPreferencesSelection
-class AccommodationPreferencesSelection {
-{static} segmentId
-travelerId
-}
-AccommodationPreferencesSelection *-- AccommodationPreferenceList
-OfferProposed *-- OfferBasic
-class OfferBasic {
-itineraryId
-totalPriceWithOptionalAccommodations
-lowestAvailableSlots
-areReductionCardsApplied
-areCorporateCodesApplied
-travelClassLabels
-ticketingOptions
-containsIncludedAncillaries
-}
-OfferBasic *-- OfferShared
-class OfferShared {
-{static} id
-direction
-> OUTWARD
-> INWARD
-totalPrice
-flexibilityLevel
-withRestrictions
-accommodationCategory
-accommodationPreferences
-globalTravelClass
-globalReservationStatus
-> OVERBOOKING
-tags
-}
-OfferShared --> Money
-OfferShared o-- AccommodationPreferences
-class AccommodationPreferences {
-segmentId
-allTravelersPreferences
-availablePreferences
-}
-AccommodationPreferences --> Segment
-OfferBasic --> Money
-OfferBasic o-- TravelClassLabel
-OfferBasic --> Idhref
-OfferProposed o-- Ancillary
-class Ancillary {
-travelerReferences
-}
-Ancillary *-- AncillaryShared
-class AncillaryShared {
-{static} id
-{static} classification
-> INCLUDED
-> OPTIONAL
-> STANDALONE
-priceDetails
-pricingMode
-> INDIVIDUAL
-> COLLECTIVE
-category
-tags
-product
-orderItemId
-groupReference
-location
-locationType
-> ORIGIN
-> DESTINATION
-countries
-}
-AncillaryShared --> Location
-AncillaryShared --> Product
-AncillaryShared --> Price
-AncillaryShared --> OrderItem
-class OrderItem {
-{static} id
-direction
-> OUTWARD
-> INWARD
-totalPrice
-offerGlobalTravelClass
-offerAccommodationCategory
-offerFlexibilityLevel
-globalReservationStatus
-> OVERBOOKING
-groupReference
-status
-> BOOKED
-> TICKETED
-> RELEASED
-> PARTIALLY_RELEASED
-itinerary
-accommodations
-admissions
-ancillaries
-cardAndPasses
-offerTags
-segmentsWithoutProducts
-cleanUp
-> OPTIONAL
-> REQUIRED
-cleanUpContext
-> EXCHANGE
-> BOOKING
-}
-OrderItem --> Location
-OrderItem o-- Admission
-OrderItem --> Money
-OrderItem o-- AncillaryBooked
-class AncillaryBooked {
-providerReference
-quantity
-actorIds
-ancillaryDetails
-}
-AncillaryBooked *-- AncillaryShared
-AncillaryBooked o-- AncillaryDetail
-class AncillaryDetail {
-actorId
-mealPreference
-}
-AncillaryDetail --> Actor
-class Actor {
-roles
-orderItemIds
-references
-}
-Actor *-- Traveler
-Actor o-- Idhref
-OrderItem --> Itinerary
-OrderItem o-- AccommodationBooked
-class AccommodationBooked {
-accommodationDetails
-providerReference
-}
-AccommodationBooked o-- AccommodationDetails
-class AccommodationDetails {
-segmentId
-actorId
-placeNumber
-coachNumber
-direction
-position
-configuration
-passengerProfile
-equipment
-level
-environment
-gender
-smoking
-petsAllowed
-bike
-}
-AccommodationDetails --> Actor
-AccommodationDetails --> Segment
-AccommodationBooked *-- AccommodationShared
-OrderItem o-- CardAndPass
-class CardAndPass {
-travelerReferences
-}
-CardAndPass *-- CardAndPassShared
-class CardAndPassShared {
-{static} id
-priceDetails
-pricingMode
-> INDIVIDUAL
-> COLLECTIVE
-category
-tags
-product
-countries
-}
-CardAndPassShared --> Product
-CardAndPassShared --> Price
-AncillaryShared --> Idhref
+parserequest o-- field
+action o-- action
+field *-- parserequest
+url2pdfrequest o-- initialCookie
+url2pdfrequest o-- action
+fetchrequest o-- action
+fetchrequest o-- initialCookie
+parserequest --> Paginator
+serprequest o-- field
+url2screenshotrequest o-- initialCookie
+parserequest --> fetchrequest
+url2screenshotrequest o-- action
 @enduml

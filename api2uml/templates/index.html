@@ -24,6 +24,7 @@
   background-color: #dde0e3;
   cursor: pointer;
 }
+
    </style>
 </head>
 
@@ -89,7 +90,7 @@
             <div class="col text-end p-2">
                <div class="form-group">
                   <textarea class="form-control" id="swaggertextarea" rows="8" style="min-width: 100%"
-                     placeholder="1. Choose file or paste your OpenAPI/Swagger in YAML format here..."></textarea>
+                     placeholder="1. Paste your OpenAPI/Swagger in YAML format here..."></textarea>
                </div>
                <div class="row p-1">
                   <div class="col test-start fs-6" id="fileloaded">
@@ -114,7 +115,7 @@
       </div>
       <br/>
       <div class="row justify-content-center">
-         <img style="width: auto" id="diagram" alt="3. Diagram will appear here.">
+         <img style="width: auto" id="diagram" alt="3. Diagram will appear here." src="{{ url_for('static',filename='schema.png') }}">
       </div>
    </div>
    <script src="{{ url_for('static',filename='popper.min.js') }}"></script>
@@ -157,16 +158,27 @@
          return false;
       };
 
+
+      async function fetchRenderedImage(plantumlUrl, uml)
+      {
+         return plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
+      };
+
       function render(uml) {
          var plantumlUrl = $(".form-check-input:checked").val();
-         $("#plantumltextarea").val(uml);
-         var src = plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
-         var editlink = src.replace('img', 'uml');
-         $('#editlink').html(
-         '<a href="'+editlink+'" target="_blank" type="button" class="btn btn-secondary btn-sm"> Edit </a>'
-         )
+         var waitgif = "{{ url_for('static',filename='loading-gif.gif')}}"
+         $("#diagram").attr("src", waitgif);
 
-         $("#diagram").attr("src", src);
+
+         fetchRenderedImage(plantumlUrl, uml).then((response) => {
+            //var src = plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
+            var editlink = response.replace('img', 'uml');
+            $("#diagram").attr("src", response);
+            $('#editlink').html(
+               '<a href="'+editlink+'" target="_blank" type="button" class="btn btn-secondary btn-sm"> Edit </a>'
+            )
+         });
+
          return false;
       };
 
@@ -184,11 +196,21 @@
          console.log($(this).val())
       });
 
+      function cleanString(input) {
+         var output = "";
+         for (var i=0; i<input.length; i++) {
+            if (input.charCodeAt(i) <= 127) {
+                  output += input.charAt(i);
+            }
+         }
+         return output;
+      }
 
       $('#drawButton').on('click', function (e) {
          //your awesome code here
          var swagger = $('#swaggertextarea').val();
-         var swaggerBase64 = btoa(swagger);
+
+         var swaggerBase64 = btoa(cleanString(swagger));
          let data = { "schema": swaggerBase64 };
 
          var nodeSelected = $('#inputSelectRoot').val();
@@ -207,10 +229,12 @@
             .then((response => response.json()))
             .then((data => {
                refreshNodes(data['nodes']);
+               
                var statstext = "Nodes:"+data['nodes'].length;
-               console.log(statstext)
                $('#stats').html(statstext);
-               render(atob(data['uml']));
+               var uml = atob(data['uml']);
+               $("#plantumltextarea").val(uml);
+               render(uml);
             }));
 
 
