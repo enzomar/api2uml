@@ -1,0 +1,20 @@
+{
+   "name": "api2uml",
+   "version": "1.0.0",
+   "description": "",
+   "scripts": {
+       "build": "echo \"No build specified\" && exit 1",
+       "test": "echo \"No test specified\" && exit 1",
+       "start": "python api2uml/api2umlweb.py"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/enzomar/api2uml.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/enzomar/api2uml/issues"
+    },
+    "homepage": "https://github.com/enzomar/api2uml#readme"
+}
