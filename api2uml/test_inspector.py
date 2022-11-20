@@ -31,6 +31,7 @@ def _build_g1():
     #g.display()
     return g
 
+"""
 
 def test_strigify_path():
     path = ['a','b']
@@ -93,6 +94,8 @@ def test_traverse_0():
     _check_same_list(gpaths, [['NodeA', 'NodeB']])
 
 
+
+
 def test_traverse_1():
     g = _build_g1()
     linkmap, roots = Inspector._build_network(g)
@@ -109,8 +112,14 @@ def test_traverse_1():
     print(gpaths)
     assert(len(gpaths) == 3)
 
- 
+"""
 
-
+def test_traverse_FDS():
+    g = _build_g1()
+    linkmap, roots = Inspector._build_network(g)
+    gpaths = Inspector._traverseDFS('NodeB',linkmap)
+    print(gpaths)
+    assert(len(gpaths) == 2)
+    assert(len(gpaths[0]) + len(gpaths[1]) == 5)
 
 

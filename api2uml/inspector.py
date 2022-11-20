@@ -31,6 +31,23 @@ class Inspector(object):
 
 		return path
 
+	def _traverseDFS(origin, linkmap):
+		
+		stack = [(origin, [origin])]
+		gpath=[]
+
+		while stack:
+			top, path = stack.pop()
+			if top in linkmap:
+				for each in linkmap[top]:
+					dest = each.dest
+					stack.append((dest, path + [dest]))
+			else:
+				gpath.append(path)
+
+		return gpath
+
+
 	@staticmethod
 	def _traverse(origin, linkmap, lpath=[], gpath=[]):
 		destinations = linkmap[origin]
@@ -90,7 +107,7 @@ class Inspector(object):
 		unique_paths_str = list()
 		max_depth = 0
 		for each in roots:
-			paths = Inspector._traverse(each, network, [each])
+			paths = Inspector._traverseDFS(each, network)
 			for path in paths:
 				Inspector._reduce_paths(path, unique_paths, unique_paths_str)
 			max_depth = max(max_depth, len(path))
@@ -105,8 +122,8 @@ class Inspector(object):
 		
 		output = dict()
 		output['roots'] = list(roots)
-		#output['unique_paths'] = unique_paths
-		#output['stats'] = stats
+		output['unique_paths'] = unique_paths
+		output['stats'] = stats
 
 		return output
 	
