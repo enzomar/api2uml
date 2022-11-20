@@ -46,6 +46,12 @@ class Link(object):
     self.dest = None
     self.type = None #LinkType
 
+  
+  def set(self, origin, dest, type_ = None):
+    self.origin = origin
+    self.dest = dest
+    self.type = type_
+
 
   def __str__(self):
     return "{0} {1} {2}: {3}".format(self.origin, 

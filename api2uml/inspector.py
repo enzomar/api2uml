@@ -1,6 +1,7 @@
 import copy
 
 class Inspector(object):
+
 	@staticmethod
 	def _build_network(graph):
 		linkmap = {}
@@ -19,15 +20,29 @@ class Inspector(object):
 		return linkmap, roots
 
 	@staticmethod
-	def _traverse( origin, linkmap, path=[]):
-		if origin in linkmap:
-			destinations = linkmap[origin]
-			for each in destinations:
-				#new_path = copy.deepcopy(path)
-				dest = each.dest
-				path.append(dest)
-				return Inspector._traverse(dest, linkmap, path)
+	def _traverse2(origin, linkmap, path=[]):
+		result = []
+		for origin in linkmap:
+			destination = linkmap[origin]
+			new_path = copy.deepcopy(path).append(destination)
+			result.extend(Inspector._traverse2(destination, linkmap, path = new_path))
+		return result
+
+
 		return path
+
+	@staticmethod
+	def _traverse(origin, linkmap, lpath=[], gpath=[]):
+		destinations = linkmap[origin]
+		for each in destinations:
+			dest = each.dest
+			tmp_path = copy.deepcopy(lpath)
+			tmp_path.append(dest)
+			if dest in linkmap:
+				Inspector._traverse(dest, linkmap, lpath=tmp_path, gpath=gpath)
+			else:
+				gpath.append(tmp_path)
+		return gpath
 				
 	@staticmethod
 	def _stringify_list(array):
@@ -40,6 +55,26 @@ class Inspector(object):
 	def _stringify(array):
 		return ','.join(array)
 
+
+	@staticmethod
+	def _compute_stats(unique_paths: list) -> dict:
+
+		stats = dict()
+		stats['max_depth'] = 0
+		stats['avg_depth'] = 0
+
+		sum_depth = 0
+		for each in unique_paths:
+			stats['max_depth'] = max(stats['max_depth'], len(each)-1)
+			sum_depth += len(each)-1
+
+		try:
+			stats['avg_depth'] = round(sum_depth / len(unique_paths),2)
+		except:
+			pass
+		
+		return stats 
+
 	@staticmethod
 	def _reduce_paths(path: list, reduced_paths: list, reduced_paths_str: list,) -> None:
 		path_str = Inspector._stringify(path)
@@ -50,32 +85,14 @@ class Inspector(object):
 		reduced_paths_str.append(path_str)
 		
 	@staticmethod
-	def _compute_stats(unique_paths: list) -> dict:
-
-		stats = dict()
-		stats['max_depth'] = 0
-		stats['avg_depth'] = 0
-
-		sum_depth = 0
-		for each in unique_paths:
-			stats['max_depth'] = max(stats['max_depth'], len(each))
-			sum_depth += len(each)
-
-		try:
-			stats['avg_depth'] = round(sum_depth / len(unique_paths),2)
-		except:
-			pass
-		
-		return stats 
-
-	@staticmethod
 	def _get_unique_path(network, roots):
 		unique_paths = list()
 		unique_paths_str = list()
 		max_depth = 0
 		for each in roots:
-			path = Inspector._traverse(each, network, [each])
-			Inspector._reduce_paths(path, unique_paths, unique_paths_str)
+			paths = Inspector._traverse(each, network, [each])
+			for path in paths:
+				Inspector._reduce_paths(path, unique_paths, unique_paths_str)
 			max_depth = max(max_depth, len(path))
 		return unique_paths	
 
@@ -83,13 +100,13 @@ class Inspector(object):
 	@staticmethod
 	def inspect(graph):
 		network, roots = Inspector._build_network(graph)
-		unique_paths = Inspector._get_unique_path(network, roots)
-		stats = Inspector._compute_stats(unique_paths)
+		#unique_paths = Inspector._get_unique_path(network, roots)
+		#stats = Inspector._compute_stats(unique_paths)
 		
 		output = dict()
 		output['roots'] = list(roots)
-		output['unique_paths'] = unique_paths
-		output['stats'] = stats
+		#output['unique_paths'] = unique_paths
+		#output['stats'] = stats
 
 		return output
 	
