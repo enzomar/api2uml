@@ -10,7 +10,21 @@
    <link href="{{ url_for('static',filename='docs.css')}}" rel="stylesheet">
    <script src="{{ url_for('static',filename='bootstrap.bundle.min.js')}}"></script>
 
-
+   <style>
+      .custom-file-button input[type=file] {
+  margin-left: -2px !important;
+}
+.custom-file-button input[type=file]::-webkit-file-upload-button {
+  display: none;
+}
+.custom-file-button input[type=file]::file-selector-button {
+  display: none;
+}
+.custom-file-button:hover label {
+  background-color: #dde0e3;
+  cursor: pointer;
+}
+   </style>
 </head>
 
 <body>
@@ -24,12 +38,21 @@
 
             <div class="col text-start p-3">
                <div class="input-group">
-                  <div class="input-group-append">
-                     <button id="drawButton" class="btn btn-primary" type="button">Draw</button>
-                  </div>
+                  <!-- div class="custom-file-button">
+                     <input type="file" class="form-control" id="inputSwaggerFile">
+                  </div -->
+
+
+                  <button id="sampleButton" class="btn btn-secondary" type="button">Sample</button>
+                  
                   <select class="form-select" id="inputSelectRoot" aria-label="Default select">
                      <option selected>*</option>
                   </select>
+
+                     <button id="drawButton" class="btn btn-primary" type="button">Draw</button>
+
+  
+
                </div>
             </div>
 
@@ -66,16 +89,25 @@
             <div class="col text-end p-2">
                <div class="form-group">
                   <textarea class="form-control" id="swaggertextarea" rows="8" style="min-width: 100%"
-                     placeholder="1. Paste your OpenAPI or Swagger in YAML format here..."></textarea>
+                     placeholder="1. Choose file or paste your OpenAPI/Swagger in YAML format here..."></textarea>
                </div>
+               <div class="row p-1">
+                  <div class="col test-start fs-6" id="fileloaded">
+                  </div>
+            </div>
             </div>
             <div class="col text-end p-2">
                <div class="form-group">
                   <textarea class="form-control" id="plantumltextarea" rows="8" style="min-width: 100%"
                      placeholder="2. Here you will see the uml text." disabled></textarea>
                </div>
-                  <div class="p-1" id="editlink">
+               <div class="row p-1">
+                  <div class="col text-start fs-6 fw-light" id="stats">
                   </div>
+                  <div class="col text-end" id="editlink">
+                  </div>
+            </div>
+                 
             </div>
 
          </div>
@@ -92,11 +124,29 @@
 
       refreshNodes();
 
+      function readTextFile(file)
+      {
+         var rawFile = new XMLHttpRequest();
+         rawFile.open("GET", file, false);
+         rawFile.onreadystatechange = function ()
+         {
+            if(rawFile.readyState === 4)
+            {
+                  if(rawFile.status === 200 || rawFile.status == 0)
+                  {
+                     var allText = rawFile.responseText;
+                     alert(allText);
+                  }
+            }
+         }
+         rawFile.send(null);
+      }
+
       function refreshNodes(arrayOfNodes = []) {
          var nodeDropDrawn = $('#inputSelectRoot');
          nodeDropDrawn.empty();
          nodeDropDrawn.append(
-            $('<option selected></option>').val("*").html("*")
+            $('<option selected></option>').val("*").html("All Nodes")
          );
 
          $.each(arrayOfNodes, function (val, text) {
@@ -109,7 +159,6 @@
 
       function render(uml) {
          var plantumlUrl = $(".form-check-input:checked").val();
-         console.log(plantumlUrl);
          $("#plantumltextarea").val(uml);
          var src = plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
          var editlink = src.replace('img', 'uml');
@@ -117,17 +166,22 @@
          '<a href="'+editlink+'" target="_blank" type="button" class="btn btn-secondary btn-sm"> Edit </a>'
          )
 
-
-         console.log(src);
          $("#diagram").attr("src", src);
          return false;
       };
 
       $('#customPlantUMLText').on('input', function (e) {
          var customUrl = $('#customPlantUMLText').val();
-         console.log(customUrl);
          $("#customPlantUML").val(customUrl);
 
+      });
+
+      $('#sampleButton').on('click', function(r){
+         $('#swaggertextarea').val('swagger: \'2.0\'\r\n\r\ndefinitions:  \r\n    NodeA:\r\n      type: object\r\n      NodeB:\r\n        $ref: \'#\/definitions\/NodeB\'\r\n    NodeB:\r\n      type: object\r\n      NodeC:\r\n        $ref: \'#\/definitions\/NodeC\'\r\n      NodeE:\r\n        $ref: \'#\/definitions\/NodeE\'\r\n    NodeC:\r\n      type: object\r\n      NodeD:\r\n        $ref: \'#\/definitions\/NodeD\'  \r\n    NodeD:\r\n      type: object\r\n    NodeE:\r\n      type: object \r\n    NodeF:\r\n      type: object \r\n      NodeG:\r\n        $ref: \'#\/definitions\/NodeG\'  \r\n    NodeG:\r\n      type: object \r\n      NodeI:\r\n        $ref: \'#\/definitions\/NodeI\' \r\n      NodeB:\r\n        $ref: \'#\/definitions\/NodeB\' \r\n    NodeH:\r\n      type: object \r\n      NodeI:\r\n        $ref: \'#\/definitions\/NodeI\' \r\n    NodeJ:\r\n      type: object \r\n      NodeK:\r\n        $ref: \'#\/definitions\/NodeK\'  \r\n    NodeK:\r\n      type: object \r\n    NodeL:\r\n      type: object\r\n    NodeI:\r\n      type: object \r\n')
+      });
+
+      $('#inputSwaggerFile').on('change', function(r){
+         console.log($(this).val())
       });
 
 
@@ -152,7 +206,10 @@
          })
             .then((response => response.json()))
             .then((data => {
-               refreshNodes(data['nodes'])
+               refreshNodes(data['nodes']);
+               var statstext = "Nodes:"+data['nodes'].length;
+               console.log(statstext)
+               $('#stats').html(statstext);
                render(atob(data['uml']));
             }));
 
