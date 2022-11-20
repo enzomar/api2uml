@@ -25,12 +25,18 @@
   cursor: pointer;
 }
 
+body.waiting * {
+    cursor: progress;
+}
+
    </style>
 </head>
 
 <body>
    <div class="container">
       <!-- Content here -->
+
+      
       <div class="row">
          <h1>API2UML</h1>
       </div>
@@ -43,7 +49,6 @@
                      <input type="file" class="form-control" id="inputSwaggerFile">
                   </div -->
 
-
                   <button id="sampleButton" class="btn btn-secondary" type="button">Sample</button>
                   
                   <select class="form-select" id="inputSelectRoot" aria-label="Default select">
@@ -52,7 +57,6 @@
 
                      <button id="drawButton" class="btn btn-primary" type="button">Draw</button>
 
-  
 
                </div>
             </div>
@@ -115,15 +119,28 @@
       </div>
       <br/>
       <div class="row justify-content-center">
-         <img style="width: auto" id="diagram" alt="3. Diagram will appear here." src="{{ url_for('static',filename='schema.png') }}">
+         <img style="width: auto" id="diagram" 
+         alt="3. Diagram will appear here." 
+         src="{{ url_for('static',filename='schema.png') }}"
+         onerror='this.onerror=null;this.src="{{ url_for('static',filename='error.gif') }}";'>
       </div>
    </div>
+
+<footer class="fixed-bottom mt-auto py-3 bg-light">
+  <div class="container">
+    <span class="text-muted fs-6">V.0.1 - Author: V.Marafioti</span>
+  </div>
+</footer>
+
+
    <script src="{{ url_for('static',filename='popper.min.js') }}"></script>
    <script src="{{ url_for('static',filename='jquery-3.6.1.min.js') }}"></script>
    <script src="{{ url_for('static',filename='plantuml-encoder.min.js') }}"></script>
    <script>
 
-      refreshNodes();
+      $(document).ready(function () {
+         refreshNodes();
+      });
 
       function readTextFile(file)
       {
@@ -159,27 +176,21 @@
       };
 
 
-      async function fetchRenderedImage(plantumlUrl, uml)
-      {
-         return plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
-      };
+
 
       function render(uml) {
          var plantumlUrl = $(".form-check-input:checked").val();
-         var waitgif = "{{ url_for('static',filename='loading-gif.gif')}}"
-         $("#diagram").attr("src", waitgif);
+         var imglink = plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
+         var editlink = imglink.replace('img', 'uml');
+         $("#diagram").attr("src", imglink);
 
-
-         fetchRenderedImage(plantumlUrl, uml).then((response) => {
-            //var src = plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
-            var editlink = response.replace('img', 'uml');
-            $("#diagram").attr("src", response);
-            $('#editlink').html(
-               '<a href="'+editlink+'" target="_blank" type="button" class="btn btn-secondary btn-sm"> Edit </a>'
-            )
-         });
-
+         console.log(imglink);
+         
+         $('#editlink').html(
+            '<a href="'+editlink+'" target="_blank" type="button" class="btn btn-secondary btn-sm"> Edit </a>'
+         )
          return false;
+
       };
 
       $('#customPlantUMLText').on('input', function (e) {
@@ -206,15 +217,35 @@
          return output;
       }
 
+      function disableUI()
+      {
+         $("form:input").prop("disabled",true);
+         $("button").prop("disabled",true);
+         $('body').addClass('waiting');
+      }
+
+      function enableUI()
+      {
+         $("form :input").prop("disabled",false);
+         $("button").prop("disabled",false);
+         $('body').removeClass('waiting');
+      }
+
       $('#drawButton').on('click', function (e) {
-         //your awesome code here
+
          var swagger = $('#swaggertextarea').val();
+         if(swagger == ''){ 
+            alert('Input is empty!', 'warning');
+            return false;
+         };
+
+         disableUI();         
+         var waitgif = "{{ url_for('static',filename='loading-gif.gif')}}"
+         $("#diagram").attr("src", waitgif);
 
          var swaggerBase64 = btoa(cleanString(swagger));
          let data = { "schema": swaggerBase64 };
-
          var nodeSelected = $('#inputSelectRoot').val();
-
          var url = "/uml"
          if (nodeSelected !== "*") {
             url = url + '?' +
@@ -229,14 +260,22 @@
             .then((response => response.json()))
             .then((data => {
                refreshNodes(data['nodes']);
-               
                var statstext = "Nodes:"+data['nodes'].length;
                $('#stats').html(statstext);
                var uml = atob(data['uml']);
                $("#plantumltextarea").val(uml);
                render(uml);
-            }));
+               enableUI();
+            })) 
+            .catch(error => {
+               var errorgif = "{{ url_for('static',filename='error.gif')}}"
+               $("#diagram").attr("src", errorgif);
+               alert('Error while converting to PlantUML!\m'+error, 'danger');
+               enableUI();
 
+            });;
+            
+ 
 
       });
 
