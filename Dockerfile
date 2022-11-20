@@ -1,5 +1,7 @@
 FROM python:3.10
 
+MAINTAINER Vincenzo MARAFIOTI "enzo.mar@gmail.com"
+
 WORKDIR /app
 
 ADD requirements.txt /app/requirements.txt
