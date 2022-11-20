@@ -107,7 +107,7 @@ body.waiting * {
                      placeholder="2. Here you will see the uml text." disabled></textarea>
                </div>
                <div class="row p-1">
-                  <div class="col text-start fs-6 fw-light" id="stats">
+                  <div class="col-8 text-start fs-6 fw-light" id="inspect">
                   </div>
                   <div class="col text-end" id="editlink">
                   </div>
@@ -146,9 +146,14 @@ body.waiting * {
    <script src="{{ url_for('static',filename='plantuml-encoder.min.js') }}"></script>
    <script>
 
+      var serialize_graph = null;
+
       $(document).ready(function () {
          refreshNodes();
+
       });
+
+
 
       function readTextFile(file)
       {
@@ -209,10 +214,15 @@ body.waiting * {
 
       $('#sampleButton').on('click', function(r){
          $('#swaggertextarea').val('swagger: \'2.0\'\r\n\r\ndefinitions:  \r\n    NodeA:\r\n      type: object\r\n      NodeB:\r\n        $ref: \'#\/definitions\/NodeB\'\r\n    NodeB:\r\n      type: object\r\n      NodeC:\r\n        $ref: \'#\/definitions\/NodeC\'\r\n      NodeE:\r\n        $ref: \'#\/definitions\/NodeE\'\r\n    NodeC:\r\n      type: object\r\n      NodeD:\r\n        $ref: \'#\/definitions\/NodeD\'  \r\n    NodeD:\r\n      type: object\r\n    NodeE:\r\n      type: object \r\n    NodeF:\r\n      type: object \r\n      NodeG:\r\n        $ref: \'#\/definitions\/NodeG\'  \r\n    NodeG:\r\n      type: object \r\n      NodeI:\r\n        $ref: \'#\/definitions\/NodeI\' \r\n      NodeB:\r\n        $ref: \'#\/definitions\/NodeB\' \r\n    NodeH:\r\n      type: object \r\n      NodeI:\r\n        $ref: \'#\/definitions\/NodeI\' \r\n    NodeJ:\r\n      type: object \r\n      NodeK:\r\n        $ref: \'#\/definitions\/NodeK\'  \r\n    NodeK:\r\n      type: object \r\n    NodeL:\r\n      type: object\r\n    NodeI:\r\n      type: object \r\n')
+         serialize_graph = null;
       });
 
       $('#inputSwaggerFile').on('change', function(r){
          console.log($(this).val())
+      });
+
+      $('#swaggertextarea').on('change', function(r){
+         serialize_graph = null;
       });
 
       function cleanString(input) {
@@ -252,7 +262,7 @@ body.waiting * {
          $("#diagram").attr("src", waitgif);
 
          var swaggerBase64 = btoa(cleanString(swagger));
-         let data = { "schema": swaggerBase64 };
+         let data = { "schema": swaggerBase64, "graph": serialize_graph };
          var nodeSelected = $('#inputSelectRoot').val();
          var url = "/uml"
          if (nodeSelected !== "*") {
@@ -268,8 +278,12 @@ body.waiting * {
             .then((response => response.json()))
             .then((data => {
                refreshNodes(data['nodes']);
-               var statstext = "Nodes:"+data['nodes'].length;
-               $('#stats').html(statstext);
+               serialize_graph = data["graph"];
+               n = data['nodes'].length;
+               m = data['inspect']['stats']['max_depth']
+               a = data['inspect']['stats']['avg_depth']
+               var statstext = "Nodes:"+n+', Depth (Max): '+ m +', Depth (avg): '+a;
+               $('#inspect').html(statstext);
                var uml = atob(data['uml']);
                $("#plantumltextarea").val(uml);
                render(uml);
