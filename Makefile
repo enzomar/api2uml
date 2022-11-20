@@ -53,7 +53,7 @@ build: setup Dockerfile ## build docker image
 
 
 docker: build ## run dockerize image (read from stdin)
-	docker run -i api2uml
+	docker run -p 5000:5000 -i api2uml
 
 package: setup ## create a python package under dist folder
 	. venv/bin/activate; python setup.py sdist

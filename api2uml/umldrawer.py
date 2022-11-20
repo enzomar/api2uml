@@ -68,10 +68,11 @@ class UMLDrawer(object):
     if node_name in already_drawn:
       return
     already_drawn.append(node_name)
+    if node_name in graph.nodes:
+      self._draw_node(graph.nodes[node_name], output)
 
     if node_name in linkmap:
       links = linkmap[node_name]
-      self._draw_node(graph.nodes[node_name], output)
       for link in links:
         next_node_name = link.dest
         self._draw_link(link, output)

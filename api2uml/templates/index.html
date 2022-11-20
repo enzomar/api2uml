@@ -1,116 +1,163 @@
 <!doctype html>
 <html lang="en">
-   <head>
-      <title>API2UML</title>
-      <!-- Required meta tags -->
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap.min.css')}}">
-      <link href="{{ url_for('static',filename='docs.css')}}" rel="stylesheet">
-      <script src="{{ url_for('static',filename='bootstrap.bundle.min.js')}}
-"></script>
 
-      <style>
- .row {
-    display: block;
-}
-      </style>
-      
-   </head>
-   <body>
-      <div class="container">
-         <!-- Content here -->
+<head>
+   <title>API2UML</title>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap.min.css')}}">
+   <link href="{{ url_for('static',filename='docs.css')}}" rel="stylesheet">
+   <script src="{{ url_for('static',filename='bootstrap.bundle.min.js')}}"></script>
+
+
+</head>
+
+<body>
+   <div class="container">
+      <!-- Content here -->
+      <div class="row">
+         <h1>API2UML</h1>
+      </div>
+      <div class="commands bg-light px-2">
          <div class="row">
-            <h1>API2UML</h1>
-         </div>
-         <br/>
-         <div class="row">
-            <div class="input-group">
-               <select class="custom-select" id="inputSelectRoot" aria-label="inputSelectRoot">
-                 <option selected>*</option>
-               </select>
-               <div class="input-group-append">
-                 <button id="drawButton" class="btn btn-outline-secondary" type="button">Draw</button>
+
+            <div class="col text-start p-3">
+               <div class="input-group">
+                  <div class="input-group-append">
+                     <button id="drawButton" class="btn btn-primary" type="button">Draw</button>
+                  </div>
+                  <select class="custom-select" id="inputSelectRoot" aria-label="inputSelectRoot">
+                     <option selected>*</option>
+                  </select>
+               </div>
+
+            </div>
+
+            <div class="col text-end p-2">
+               <div class="dropdown">
+                  <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                     aria-expanded="false" data-bs-auto-close="outside">
+                     PlantUML Server
+                  </button>
+                  <form class="dropdown-menu p-4">
+                     <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="publicPlantUML" checked value="https://plantuml.com/plantuml">
+                        <label class="form-check-label" for="publicPlantUML">
+                           https://plantuml.com/plantuml
+                        </label>
+                     </div>
+                     <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="localPlantUML" value="http://localhost:8080">
+                        <label class="form-check-label" for="localPlantUML">
+                           http://localhost:8080
+                        </label>
+                     </div>
+                     <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="customPlantUML">
+                        <input type="text" class="form-control" aria-label="Sizing example input"
+                           aria-describedby="inputGroup-sizing-sm" id="customPlantUMLText">
+
+                     </div>
+                  </form>
                </div>
             </div>
          </div>
          <div class="row">
-            <div class="form-group">
-               <textarea class="form-control" id="swaggertextarea" rows="8" style="min-width: 100%"></textarea>
+            <div class="col text-end p-2">
+               <div class="form-group">
+                  <textarea class="form-control" id="swaggertextarea" rows="8" style="min-width: 100%"
+                     placeholder="1. Paste your OpenAPI or Swagger in YAML format here..."></textarea>
+               </div>
+            </div>
+            <div class="col text-end p-2">
+               <div class="form-group">
+                  <textarea class="form-control" id="plantumltextarea" rows="8" style="min-width: 100%"
+                     placeholder="2. Here you will see the uml text." disabled></textarea>
+               </div>
             </div>
 
          </div>
-         <br/>
-         <div class="row">
-            <img id="diagram" alt="Diagram will appear here.">
-               
-         </div>
       </div>
-      <script src="{{ url_for('static',filename='popper.min.js') }}"></script>
-      <script src="{{ url_for('static',filename='jquery-3.6.1.min.js') }}"></script>
-      <script src="{{ url_for('static',filename='plantuml-encoder.min.js') }}"></script>
-      <script>
-      
+      <br/>
+      <div class="row justify-content-center">
+         <img style="width: auto" id="diagram" alt="3. Diagram will appear here.">
+      </div>
+   </div>
+   <script src="{{ url_for('static',filename='popper.min.js') }}"></script>
+   <script src="{{ url_for('static',filename='jquery-3.6.1.min.js') }}"></script>
+   <script src="{{ url_for('static',filename='plantuml-encoder.min.js') }}"></script>
+   <script>
+
       refreshNodes();
 
       function refreshNodes(arrayOfNodes = []) {
          var nodeDropDrawn = $('#inputSelectRoot');
-
          nodeDropDrawn.empty();
-         console.log(arrayOfNodes);
          nodeDropDrawn.append(
-              $('<option selected></option>').val("*").html("*")
-            );
-         
-         $.each(arrayOfNodes, function(val, text) {
+            $('<option selected></option>').val("*").html("*")
+         );
+
+         $.each(arrayOfNodes, function (val, text) {
             nodeDropDrawn.append(
-              $('<option></option>').val(text).html(text)
+               $('<option></option>').val(text).html(text)
             );
          });
-
          return false;
       };
 
       function render(uml) {
-         var src = "http://localhost:8080/img/" + window.plantumlEncoder.encode( uml );
+         var plantumlUrl = $(".form-check-input:checked").val();
+         console.log(plantumlUrl);
+         $("#plantumltextarea").val(uml);
+         var src = plantumlUrl + "/img/" + window.plantumlEncoder.encode(uml);
          console.log(src);
          $("#diagram").attr("src", src);
          return false;
       };
 
+      $('#customPlantUMLText').on('input', function (e) {
+         var customUrl = $('#customPlantUMLText').val();
+         console.log(customUrl);
+         $("#customPlantUML").val(customUrl);
+
+      });
+
+
       $('#drawButton').on('click', function (e) {
-            //your awesome code here
-            var swagger = $('#swaggertextarea').val();
-            var swaggerBase64 = btoa(swagger);
-            let data = { "schema": swaggerBase64};
+         //your awesome code here
+         var swagger = $('#swaggertextarea').val();
+         var swaggerBase64 = btoa(swagger);
+         let data = { "schema": swaggerBase64 };
 
-            var nodeSelected = $('#inputSelectRoot').val();
+         var nodeSelected = $('#inputSelectRoot').val();
 
-            var url = "/uml"
-            if ( nodeSelected !== "*" ){
-               url = url + '?' +
-                new URLSearchParams({ node: nodeSelected }).toString();
-            }
+         var url = "/uml"
+         if (nodeSelected !== "*") {
+            url = url + '?' +
+               new URLSearchParams({ node: nodeSelected }).toString();
+         }
 
-            fetch(url, {
-              method: "POST",
-              headers: {'Content-Type': 'application/json'}, 
-              body: JSON.stringify(data)
-            })
+         fetch(url, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+         })
             .then((response => response.json()))
             .then((data => {
-              refreshNodes(data['nodes'])
-              render(atob(data['uml']));
+               refreshNodes(data['nodes'])
+               render(atob(data['uml']));
             }));
-           
 
-         });
 
-         $("uml").each(function() {
-           var src = "http://localhost:8080/img/" + window.plantumlEncoder.encode( $(this).text() )
-           $(this).replaceWith($('<img>').attr('src', src));
-         });
-         
-      </script>
-   </body>
+      });
+
+      $("uml").each(function () {
+         var src = "http://localhost:8080/img/" + window.plantumlEncoder.encode($(this).text())
+         $(this).replaceWith($('<img>').attr('src', src));
+      });
+
+   </script>
+</body>
+
 </html>

@@ -16,8 +16,8 @@ from plantweb.render import render
 
 
 
-api = Flask(__name__)
-api.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 
@@ -70,7 +70,7 @@ def _send_file(image_data):
   )
 
 
-@api.route('/uml', methods=['POST'])
+@app.route('/uml', methods=['POST'])
 def uml():
   body = request.json
   schemaBase64 = body['schema']
@@ -94,7 +94,7 @@ def uml():
 
   return jsonify(output)
 
-@api.route('/draw', methods=['POST'])
+@app.route('/draw', methods=['POST'])
 def draw():
   node = request.args.get('node')
   schemaBase64 = request.form.get('schema')
@@ -109,10 +109,10 @@ def draw():
   return _send_file(image)
 
 
-@api.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def home():
   return render_template('index.html')
 
 
 if __name__ == '__main__':
-    api.run() 
+    app.run() 

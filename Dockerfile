@@ -5,6 +5,15 @@ WORKDIR /app
 ADD requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
-ADD api2uml /app
+EXPOSE 5000
 
-CMD ["python", "api2uml.py"]
+ADD api2uml /app
+ADD entrypoint.sh /app
+ADD gunicorn_config.py /app
+
+#CMD ["python", "api2umlweb.py"]
+
+RUN pip3 install gunicorn
+
+ENTRYPOINT ["sh", "entrypoint.sh"]
+

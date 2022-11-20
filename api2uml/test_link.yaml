@@ -1,54 +1,45 @@
 swagger: '2.0'
 
 definitions:  
-
     NodeA:
       type: object
       NodeB:
         $ref: '#/definitions/NodeB'
-
     NodeB:
       type: object
       NodeC:
         $ref: '#/definitions/NodeC'
       NodeE:
         $ref: '#/definitions/NodeE'
-
     NodeC:
       type: object
       NodeD:
         $ref: '#/definitions/NodeD'  
-
     NodeD:
       type: object
-
     NodeE:
       type: object 
-
     NodeF:
       type: object 
       NodeG:
         $ref: '#/definitions/NodeG'  
-
     NodeG:
       type: object 
       NodeI:
         $ref: '#/definitions/NodeI' 
       NodeB:
         $ref: '#/definitions/NodeB' 
-
     NodeH:
       type: object 
       NodeI:
         $ref: '#/definitions/NodeI' 
-
     NodeJ:
       type: object 
       NodeK:
         $ref: '#/definitions/NodeK'  
-
     NodeK:
       type: object 
-
     NodeL:
+      type: object
+    NodeI:
       type: object 
