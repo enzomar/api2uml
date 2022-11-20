@@ -1,4 +1,0 @@
-pyyaml
-plantweb
-werkzeug
-flask

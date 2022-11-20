@@ -10,15 +10,15 @@ help:
 
 setup: venv/touchfile ## install dependencies
 
-venv/touchfile: requirements.txt ## install a virtual env and app requirements
+venv/touchfile: api2uml/requirements.txt ## install a virtual env and app requirements
 	test -d venv || virtualenv venv
-	. venv/bin/activate; pip install -Ur requirements.txt
+	. venv/bin/activate; pip install -Ur api2uml/requirements.txt
 	touch venv/touchfile
 
 setupdev: venv/touchfile.dev ## install dev dependencies
 
-venv/touchfile.dev: requirements-dev.txt ## install dev dependencies
-	. venv/bin/activate; pip install -Ur requirements-dev.txt
+venv/touchfile.dev: api2uml/requirements-dev.txt ## install dev dependencies
+	. venv/bin/activate; pip install -Ur api2uml/requirements-dev.txt
 	touch venv/touchfile.dev
 
 tests:  ## run all component tests
@@ -60,6 +60,9 @@ package: setup ## create a python package under dist folder
 
 tar: setup ## create a tar package (needs GIT repo)
 	git archive --format=tar.gz -o api2uml.tar.gz HEAD -v 
+
+deploy: ## Deploy to deta (needs deta login)
+	cd api2uml; ~/.deta/bin/deta deploy 
 
 clean:
 	# clean up
