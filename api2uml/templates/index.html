@@ -119,7 +119,7 @@ body.waiting * {
       </div>
       <br/>
       <div class="row justify-content-center">
-         <img style="width: auto" id="diagram" 
+         <img style="width: auto; margin-bottom: 65px;" id="diagram" 
          alt="3. Diagram will appear here." 
          src="{{ url_for('static',filename='schema.png') }}"
          onerror='this.onerror=null;this.src="{{ url_for('static',filename='error.gif') }}";'>
@@ -127,9 +127,17 @@ body.waiting * {
    </div>
 
 <footer class="fixed-bottom mt-auto py-3 bg-light">
-  <div class="container">
-    <span class="text-muted fs-6">V.0.1 - Author: V.Marafioti</span>
-  </div>
+   <div class="container">
+      <div class="row">
+         <div class="col text-start">
+            <span class="text-muted fs-6">V.0.1 - Author: V.Marafioti</span>
+         </div>
+         <div class="col text-end">
+            <a href="https://www.paypal.com/donate/?business=7HRKKHKTPEXRU&no_recurring=0&currency_code=EUR" 
+            target="_blank" type="button" class="btn btn-info btn-sm"> Buy me a beer!</a>
+         </div>
+      </div>
+   </div>
 </footer>
 
 
