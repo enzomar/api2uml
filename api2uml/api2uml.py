@@ -12,10 +12,9 @@ def parse_arg():
 
 	parser.add_argument('-i', '--input', required=True)  
 	parser.add_argument('-n', '--node', default=None)  
-	parser.add_argument('-w', '--web_mode', default=False, action="store_true")  
 	args = parser.parse_args()
 
-	return args.input, args.node, args.web_mode 
+	return args.input, args.node
 
 
 def load(filename):
@@ -49,10 +48,7 @@ def run(filename, node_name):
 
 
 if __name__ == "__main__":
-	filename, node_name, web_mode = parse_arg()
-	if web_mode:
-		run_web_mode()
-	else:
-		run(filename, node_name)
+	filename, node_name = parse_arg()
+	run(filename, node_name)
 
 
