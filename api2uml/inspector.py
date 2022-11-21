@@ -32,18 +32,23 @@ class Inspector(object):
 		return path
 
 	def _traverseDFS(origin, linkmap):
-		
+		"""
+		https://stackoverflow.com/questions/12864004/tracing-and-returning-a-path-in-depth-first-search
+		"""
 		stack = [(origin, [origin])]
 		gpath=[]
+		visited = set()
 
 		while stack:
 			top, path = stack.pop()
-			if top in linkmap:
-				for each in linkmap[top]:
-					dest = each.dest
-					stack.append((dest, path + [dest]))
-			else:
-				gpath.append(path)
+			if top not in visited:
+				visited.add(top)
+				if top in linkmap:
+					for each in linkmap[top]:
+						dest = each.dest
+						stack.append((dest, path + [dest]))
+				else:
+					gpath.append(path)
 
 		return gpath
 
@@ -117,8 +122,8 @@ class Inspector(object):
 	@staticmethod
 	def inspect(graph):
 		network, roots = Inspector._build_network(graph)
-		#unique_paths = Inspector._get_unique_path(network, roots)
-		#stats = Inspector._compute_stats(unique_paths)
+		unique_paths = Inspector._get_unique_path(network, roots)
+		stats = Inspector._compute_stats(unique_paths)
 		
 		output = dict()
 		output['roots'] = list(roots)

@@ -31,7 +31,6 @@ def _build_g1():
     #g.display()
     return g
 
-"""
 
 def test_strigify_path():
     path = ['a','b']
@@ -112,7 +111,6 @@ def test_traverse_1():
     print(gpaths)
     assert(len(gpaths) == 3)
 
-"""
 
 def test_traverse_FDS():
     g = _build_g1()
@@ -122,4 +120,45 @@ def test_traverse_FDS():
     assert(len(gpaths) == 2)
     assert(len(gpaths[0]) + len(gpaths[1]) == 5)
 
+def test_traverse_FDS2():
+    g = _build_g1()
+    linkmap, roots = Inspector._build_network(g)
+    gpaths = Inspector._traverseDFS('NodeF',linkmap)
+    print(gpaths)
+    assert(len(gpaths) == 3)
+    assert(len(gpaths[0]) + len(gpaths[1]) + len(gpaths[2]) == 12)
+
+
+def test_computestats_0():
+    paths = []
+    stats = Inspector._compute_stats(paths)
+    assert(stats['max_depth'] == 0)
+    assert(stats['avg_depth'] == 0)
+
+def test_computestats_1():
+    paths = []
+    paths.append(['NodeF', 'NodeG', 'NodeI'])
+    paths.append(['NodeF', 'NodeG', 'NodeB', 'NodeE'])
+    paths.append(['NodeF', 'NodeG', 'NodeB', 'NodeC', 'NodeD'])
+    stats = Inspector._compute_stats(paths)
+    
+    assert(stats['max_depth'] == 4)
+    assert(stats['avg_depth'] == 3)
+
+def test_computestats_2():
+    paths = []
+    paths.append(['NodeF'])
+    stats = Inspector._compute_stats(paths)
+    
+    assert(stats['max_depth'] == 0)
+    assert(stats['avg_depth'] == 0)
+
+def test_computestats_3():
+    paths = []
+    paths.append(['A','B'])
+    paths.append(['A','B'])
+    stats = Inspector._compute_stats(paths)
+    
+    assert(stats['max_depth'] == 1)
+    assert(stats['avg_depth'] == 1)
 
