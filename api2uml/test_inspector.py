@@ -1,16 +1,15 @@
 import pytest
 from inspector import Inspector
-import graph
-import node
-import link
+from  model.graph import Graph
+from model.link import Link
 
 
 def _build_g0():
     network = [('NodeA','NodeB')]
-    g = graph.Graph()
+    g = Graph()
     ls = set()
     for each in network:
-        l = link.Link()
+        l = Link()
         l.set(each[0], each[1])
         ls.add(l)
     g.links = ls
@@ -20,10 +19,24 @@ def _build_g0():
 def _build_g1():
     network = [('NodeF','NodeG'),('NodeA','NodeB'),('NodeG','NodeB'),('NodeG','NodeI'),('NodeH','NodeI'),('NodeB','NodeC'),
     ('NodeB','NodeE'),('NodeC','NodeD'),('NodeJ','NodeK')]
-    g = graph.Graph()
+    g = Graph()
     ls = set()
     for each in network:
-        l = link.Link()
+        l = Link()
+        l.set(each[0], each[1])
+        ls.add(l)
+        
+    g.links = ls
+    #g.display()
+    return g
+
+def _build_g2():
+    network = [('NodeF','NodeG'),('NodeA','NodeB'),('NodeG','NodeB'),('NodeG','NodeI'),('NodeH','NodeI'),('NodeB','NodeC'),
+    ('NodeC','NodeD'),('NodeJ','NodeK')]
+    g = Graph()
+    ls = set()
+    for each in network:
+        l = Link()
         l.set(each[0], each[1])
         ls.add(l)
         
@@ -129,36 +142,52 @@ def test_traverse_FDS2():
     assert(len(gpaths[0]) + len(gpaths[1]) + len(gpaths[2]) == 12)
 
 
-def test_computestats_0():
+def test_computedepth_0():
     paths = []
-    stats = Inspector._compute_stats(paths)
+    stats = Inspector._compute_depths(paths)
     assert(stats['max_depth'] == 0)
     assert(stats['avg_depth'] == 0)
 
-def test_computestats_1():
+def test_computedepth_1():
     paths = []
     paths.append(['NodeF', 'NodeG', 'NodeI'])
     paths.append(['NodeF', 'NodeG', 'NodeB', 'NodeE'])
     paths.append(['NodeF', 'NodeG', 'NodeB', 'NodeC', 'NodeD'])
-    stats = Inspector._compute_stats(paths)
+    stats = Inspector._compute_depths(paths)
     
     assert(stats['max_depth'] == 4)
     assert(stats['avg_depth'] == 3)
 
-def test_computestats_2():
+def test_computedepth_2():
     paths = []
     paths.append(['NodeF'])
-    stats = Inspector._compute_stats(paths)
+    stats = Inspector._compute_depths(paths)
     
     assert(stats['max_depth'] == 0)
     assert(stats['avg_depth'] == 0)
 
-def test_computestats_3():
+def test_computedepth_3():
     paths = []
     paths.append(['A','B'])
     paths.append(['A','B'])
-    stats = Inspector._compute_stats(paths)
+    stats = Inspector._compute_depths(paths)
     
     assert(stats['max_depth'] == 1)
     assert(stats['avg_depth'] == 1)
+
+def test_most_connected_0():
+    g = _build_g1()
+    conns = Inspector._get_most_connected(g)
+    assert(len(conns) == 1)
+    assert(conns[0] == 'NodeB')
+    
+
+def test_most_connected_2():
+    g = _build_g2()
+    conns = Inspector._get_most_connected(g)
+    assert(len(conns) == 2)
+    assert('NodeB' in conns)
+    assert('NodeG' in conns)
+
+    
 

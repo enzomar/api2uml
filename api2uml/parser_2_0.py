@@ -1,8 +1,8 @@
-from node import Node
-from node import Attribute
-from link import Link
-from link import LinkType
-from graph import Graph
+from model.node import Node
+from model.node import Attribute
+from model.link import Link
+from model.link import LinkType
+from model.graph import Graph
 import re
 
 FUNC_MATCH =re.compile(r'\w+Ids{0,1}')

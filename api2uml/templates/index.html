@@ -289,8 +289,9 @@ body.waiting * {
 
                if (data.inspect !== undefined){
                   if(data.inspect.stats !== undefined){
-                     m = data['inspect']['stats']['max_depth']
-                     a = data['inspect']['stats']['avg_depth']
+                     m = data['inspect']['stats']['depth']['max']
+                     a = data['inspect']['stats']['depth']['avg']
+                     c = data['inspect']['stats']['conns']
                      statstext = "Nodes:"+n+', Depth (Max): '+ m +', Depth (avg): '+a;
                   }
                }

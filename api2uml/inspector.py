@@ -1,4 +1,6 @@
 import copy
+from collections import Counter
+
 
 class Inspector(object):
 
@@ -17,6 +19,7 @@ class Inspector(object):
 			linkmap[link.origin].add(link)
 
 		roots = origins.difference(destinations)
+
 		return linkmap, roots
 
 	@staticmethod
@@ -78,24 +81,42 @@ class Inspector(object):
 		return ','.join(array)
 
 
+
+
+	def _get_most_connected(graph):
+		origins = list()
+		destinations  = list()
+
+		for link in graph.links:
+
+			origins.append(link.origin)
+			destinations.append(link.dest)
+
+		cnt_origins = Counter(origins)
+		cnt_destinations = Counter(destinations)
+		cnt = dict(cnt_origins+cnt_destinations)
+
+		max_cnt = [key for key, value in cnt.items() if value == max(cnt.values())]
+		return max_cnt
+
+
 	@staticmethod
-	def _compute_stats(unique_paths: list) -> dict:
+	def _compute_depths(unique_paths: list) -> dict:
 
-		stats = dict()
-		stats['max_depth'] = 0
-		stats['avg_depth'] = 0
-
+		depths = dict()
+		depths['max'] = 0
+		depths['avg'] = 0
 		sum_depth = 0
 		for each in unique_paths:
-			stats['max_depth'] = max(stats['max_depth'], len(each)-1)
+			depths['max'] = max(depths['max'], len(each)-1)
 			sum_depth += len(each)-1
 
 		try:
-			stats['avg_depth'] = round(sum_depth / len(unique_paths),2)
+			depths['avg'] = round(sum_depth / len(unique_paths),2)
 		except:
 			pass
 		
-		return stats 
+		return depths 
 
 	@staticmethod
 	def _reduce_paths(path: list, reduced_paths: list, reduced_paths_str: list,) -> None:
@@ -123,12 +144,15 @@ class Inspector(object):
 	def inspect(graph):
 		network, roots = Inspector._build_network(graph)
 		unique_paths = Inspector._get_unique_path(network, roots)
-		stats = Inspector._compute_stats(unique_paths)
+		depths = Inspector._compute_depths(unique_paths)
+		conns = Inspector._get_most_connected(graph)
 		
 		output = dict()
 		output['roots'] = list(roots)
 		output['unique_paths'] = unique_paths
-		output['stats'] = stats
+		output['stats'] = {}
+		output['stats']['depth'] = depths
+		output['stats']['conns'] = conns
 
 		return output
 	

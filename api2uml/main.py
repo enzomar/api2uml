@@ -9,7 +9,7 @@ import systeminfo
 import io
 import parser
 from umldrawer import UMLDrawer
-import graph
+import model.graph
 import base64
 import yaml
 from plantweb.render import render
@@ -17,7 +17,6 @@ from plantweb.render import render
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-
 
 @app.route('/info', methods=['GET'])
 def info():
@@ -79,7 +78,7 @@ def uml():
   try: 
     #print("Try to deserialize graph")
     serialized_graph = body['graph']
-    loc_graph = graph.deserialize(serialized_graph)
+    loc_graph = model.graph.deserialize(serialized_graph)
     uml = _run_from_graph(loc_graph, node_name)
   except Exception as ex:
     #print(str(ex))
