@@ -1,6 +1,6 @@
 FROM python:3.10
 
-MAINTAINER Vincenzo MARAFIOTI "enzo.mar@gmail.com"
+LABEL maintainer="Vincenzo MARAFIOTI enzo.mar@gmail.com"
 
 WORKDIR /app
 

@@ -1,5 +1,7 @@
 VERSION ?= $(shell cat VERSION)
-APP=sample
+
+# unittest > bump > deploy 
+
 
 .PHONY: help setup  setupdev unittest clean
 .DEFAULT_GOAL := help
@@ -21,13 +23,12 @@ venv/touchfile.dev: api2uml/requirements-dev.txt ## install dev dependencies
 	. venv/bin/activate; pip install -Ur api2uml/requirements-dev.txt
 	touch venv/touchfile.dev
 
-tests:  ## run all component tests
+test:  ## run all component tests
 	@start=$$(date +%s); \
     echo $@ start: $$start > test.log 	
 	- make lint; echo "lint:" [$$?] $$(date +%s) >> test.log
 	- make unittest; echo "unittest:" [$$?] $$(date +%s) >> test.log
 	- make coverage; echo "coverage:" [$$?] $$(date +%s)  >> test.log
-	- make demo
 	@end=$$(date +%s); \
     echo $@ stop: $$end >> test.log
 	cat test.log
@@ -40,17 +41,14 @@ unittest: setup setupdev ## run unitest
 	@echo "==== $@ ===="
 	. venv/bin/activate; cd api2uml; python -m pytest -rA ..
 
-
 demo: setup ## run from source
 	. venv/bin/activate; python api2uml/api2uml.py -i api2uml/sample.yaml
 	
 run: setup ## run from source
 	. venv/bin/activate; python api2uml/api2uml.py
 
-
 build: setup Dockerfile ## build docker image
 	docker build -t api2uml .
-
 
 docker: build ## run dockerize image (read from stdin)
 	docker run -p 5000:5000 -i api2uml
@@ -64,6 +62,7 @@ tar: setup ## create a tar package (needs GIT repo)
 deploy: ## Deploy to deta (needs deta login)
 	cd api2uml; ~/.deta/bin/deta deploy
 	cd api2uml; ~/.deta/bin/deta details
+
 
 clean:
 	# clean up

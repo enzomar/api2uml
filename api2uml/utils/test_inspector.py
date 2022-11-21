@@ -1,5 +1,5 @@
 import pytest
-from inspector import Inspector
+from utils.inspector import Inspector
 from  model.graph import Graph
 from model.link import Link
 
@@ -145,8 +145,8 @@ def test_traverse_FDS2():
 def test_computedepth_0():
     paths = []
     stats = Inspector._compute_depths(paths)
-    assert(stats['max_depth'] == 0)
-    assert(stats['avg_depth'] == 0)
+    assert(stats['max'] == 0)
+    assert(stats['avg'] == 0)
 
 def test_computedepth_1():
     paths = []
@@ -155,16 +155,16 @@ def test_computedepth_1():
     paths.append(['NodeF', 'NodeG', 'NodeB', 'NodeC', 'NodeD'])
     stats = Inspector._compute_depths(paths)
     
-    assert(stats['max_depth'] == 4)
-    assert(stats['avg_depth'] == 3)
+    assert(stats['max'] == 4)
+    assert(stats['avg'] == 3)
 
 def test_computedepth_2():
     paths = []
     paths.append(['NodeF'])
     stats = Inspector._compute_depths(paths)
     
-    assert(stats['max_depth'] == 0)
-    assert(stats['avg_depth'] == 0)
+    assert(stats['max'] == 0)
+    assert(stats['avg'] == 0)
 
 def test_computedepth_3():
     paths = []
@@ -172,8 +172,8 @@ def test_computedepth_3():
     paths.append(['A','B'])
     stats = Inspector._compute_depths(paths)
     
-    assert(stats['max_depth'] == 1)
-    assert(stats['avg_depth'] == 1)
+    assert(stats['max'] == 1)
+    assert(stats['avg'] == 1)
 
 def test_most_connected_0():
     g = _build_g1()

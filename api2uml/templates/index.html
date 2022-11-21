@@ -6,9 +6,9 @@
    <!-- Required meta tags -->
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-   <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap.min.css')}}">
-   <link href="{{ url_for('static',filename='docs.css')}}" rel="stylesheet">
-   <script src="{{ url_for('static',filename='bootstrap.bundle.min.js')}}"></script>
+   <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css')}}">
+   <link href="{{ url_for('static',filename='css/docs.css')}}" rel="stylesheet">
+   <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js')}}"></script>
 
    <style>
       .custom-file-button input[type=file] {
@@ -121,8 +121,8 @@ body.waiting * {
       <div class="row justify-content-center">
          <img style="width: auto; margin-bottom: 65px;" id="diagram" 
          alt="3. Diagram will appear here." 
-         src="{{ url_for('static',filename='schema.png') }}"
-         onerror='this.onerror=null;this.src="{{ url_for('static',filename='error.gif') }}";'>
+         src="{{ url_for('static',filename='img/schema.png') }}"
+         onerror='this.onerror=null;this.src="{{ url_for('static',filename='img/error.gif') }}";'>
       </div>
    </div>
 
@@ -141,9 +141,9 @@ body.waiting * {
 </footer>
 
 
-   <script src="{{ url_for('static',filename='popper.min.js') }}"></script>
-   <script src="{{ url_for('static',filename='jquery-3.6.1.min.js') }}"></script>
-   <script src="{{ url_for('static',filename='plantuml-encoder.min.js') }}"></script>
+   <script src="{{ url_for('static',filename='js/popper.min.js') }}"></script>
+   <script src="{{ url_for('static',filename='js/jquery-3.6.1.min.js') }}"></script>
+   <script src="{{ url_for('static',filename='js/plantuml-encoder.min.js') }}"></script>
    <script>
 
       var serialize_graph = null;
@@ -263,7 +263,7 @@ body.waiting * {
          };
 
          disableUI();         
-         var waitgif = "{{ url_for('static',filename='loading-gif.gif')}}"
+         var waitgif = "{{ url_for('static',filename='img/loading-gif.gif')}}"
          $("#diagram").attr("src", waitgif);
 
          var swaggerBase64 = btoa(cleanString(swagger));
@@ -302,7 +302,7 @@ body.waiting * {
                enableUI();
             })) 
             .catch(error => {
-               var errorgif = "{{ url_for('static',filename='error.gif')}}"
+               var errorgif = "{{ url_for('static',filename='img/error.gif')}}"
                $("#diagram").attr("src", errorgif);
                alert('Error while converting to PlantUML!\m'+error, 'danger');
                enableUI();

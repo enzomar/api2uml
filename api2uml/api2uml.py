@@ -5,7 +5,6 @@ import argparse
 import json
 import parser
 from umldrawer import UMLDrawer
-import cluster
 
 def parse_arg():
 	parser = argparse.ArgumentParser()
@@ -33,10 +32,6 @@ def parse(spec):
 def run(filename, node_name):
 	spec = load(filename)
 	graph = parse(spec)
-
-	#clusters = cluster.cluster(graph)
-	
-	#for each in clusters:
 	with open('out_{0}.plantuml'.format(graph.name), 'w') as fp:
 			ud = UMLDrawer()
 			plantuml =ud.to_plantuml(graph, node_name)

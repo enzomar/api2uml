@@ -3,12 +3,10 @@ from flask import request
 from flask import send_file
 from flask import render_template
 from flask import jsonify
-from datetime import datetime
-from inspector import Inspector
+from utils.inspector import Inspector
 import systeminfo
-import io
-import parser
-from umldrawer import UMLDrawer
+from parser import parser
+from utils.umldrawer import UMLDrawer
 import model.graph
 import base64
 import yaml
@@ -81,9 +79,12 @@ def uml():
     loc_graph = model.graph.deserialize(serialized_graph)
     uml = _run_from_graph(loc_graph, node_name)
   except Exception as ex:
-    #print(str(ex))
+    print(str(ex))
     #print("If fails rebuild the graph from the shema")
-    loc_graph, uml = _run(schema, node_name)
+    try:
+      loc_graph, uml = _run(schema, node_name)
+    except Exception as ex2:
+      print(str(ex2))
   finally:
     output = _prepare_reply(loc_graph, uml)
     return jsonify(output)

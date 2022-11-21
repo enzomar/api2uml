@@ -1,5 +1,4 @@
-import parser_3_0_0
-import parser_2_0
+from . import parser_2_0, parser_3_0_0
 
 
 def parse(yaml_buffer):
@@ -12,3 +11,4 @@ def parse(yaml_buffer):
 		return parser_2_0.parse(yaml_buffer)
 
 	return parser_3_0_0.parse(yaml_buffer)
+	
