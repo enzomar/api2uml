@@ -17,4 +17,4 @@ jobs:
         shell: bash
         run: |
           export DETA_ACCESS_TOKEN=${{ inputs.deta-access-token }}
-          ~/.deta/bin/deta deploy
+          make deploy
