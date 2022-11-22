@@ -1,14 +1,23 @@
-name: Deploy to Deta
-on: push
-
+name: "Deploy to Deta"
+on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2 #Be sure you check-out the repo first. Deta CLI needs access to the files
-      - uses: BogDAAAMN/deta-deploy-action@v1.0.1
-        with:
-          deta-access-token: ${{ secrets.DETA_ACCESS_TOKEN }} #Deta access token https://docs.deta.sh/docs/cli/auth
-          deta-name: 'api2uml' #Deta Micro name https://docs.deta.sh/docs/cli/commands/#deta-clone
-          deta-project: 'api2uml' #Optional: Deta project name https://docs.deta.sh/docs/cli/commands/#deta-clone
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        
+      # Install Deta CLI as per docs
+      # https://docs.deta.sh/docs/cli/install
+      - name: Install Deta CLI
+        shell: bash
+        run: |
+          curl -fsSL https://get.deta.dev/cli.sh | sh
 
+      # Using the access token, deploy the project to Deta
+      # https://docs.deta.sh/docs/cli/commands#deta-deploy
+      - name: Deploy to Deta
+        shell: bash
+        run: |
+          export DETA_ACCESS_TOKEN=${{ secrets.DETA_ACCESS_TOKEN }}
+          make deploy
