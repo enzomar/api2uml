@@ -10,3 +10,5 @@ jobs:
         with:
           deta-access-token: ${{ secrets.DETA_ACCESS_TOKEN }} #Deta access token https://docs.deta.sh/docs/cli/auth
           deta-name: 'api2uml' #Deta Micro name https://docs.deta.sh/docs/cli/commands/#deta-clone
+          deta-project: 'api2uml' #Optional: Deta project name https://docs.deta.sh/docs/cli/commands/#deta-clone
+
