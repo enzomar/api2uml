@@ -4,7 +4,7 @@ from flask import send_file
 from flask import render_template
 from flask import jsonify
 from utils.inspector import Inspector
-import systeminfo
+import utils.systeminfo
 from parser import parser
 from utils.umldrawer import UMLDrawer
 import model.graph
