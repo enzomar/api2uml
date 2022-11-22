@@ -19,5 +19,5 @@ jobs:
       - name: Deploy to Deta
         shell: bash
         run: |
-          export DETA_ACCESS_TOKEN=${{ DETA_ACCESS_TOCKEN }}
+          export DETA_ACCESS_TOKEN=${{ secrets.DETA_ACCESS_TOCKEN }}
           make deploy
