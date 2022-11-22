@@ -4,6 +4,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+        
       # Install Deta CLI as per docs
       # https://docs.deta.sh/docs/cli/install
       - name: Install Deta CLI
