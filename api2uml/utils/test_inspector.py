@@ -98,33 +98,6 @@ def _check_same_list(l1, l2):
     for idx in range(0, len(l1)):
         assert(l1[idx] == l2[idx])
 
-
-def test_traverse_0():
-    g0 = _build_g0()
-    linkmap, roots = Inspector._build_network(g0)
-    gpaths = Inspector._traverse('NodeA',linkmap, lpath=['NodeA'],gpath=[])
-    _check_same_list(gpaths, [['NodeA', 'NodeB']])
-
-
-
-
-def test_traverse_1():
-    g = _build_g1()
-    linkmap, roots = Inspector._build_network(g)
-    gpaths = Inspector._traverse('NodeB',linkmap, lpath=['NodeB'], gpath=[])
-    print(gpaths)
-    assert(len(gpaths) == 2)
-    assert(len(gpaths[0]) + len(gpaths[1]) == 5)
-
-
-def test_traverse_1():
-    g = _build_g1()
-    linkmap, roots = Inspector._build_network(g)
-    gpaths = Inspector._traverse('NodeF',linkmap, lpath=['NodeF'], gpath=[])
-    print(gpaths)
-    assert(len(gpaths) == 3)
-
-
 def test_traverse_FDS():
     g = _build_g1()
     linkmap, roots = Inspector._build_network(g)

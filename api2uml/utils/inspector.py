@@ -22,18 +22,6 @@ class Inspector(object):
 
 		return linkmap, roots
 
-	@staticmethod
-	def _traverse2(origin, linkmap, path=[]):
-		result = []
-		for origin in linkmap:
-			destination = linkmap[origin]
-			new_path = copy.deepcopy(path).append(destination)
-			result.extend(Inspector._traverse2(destination, linkmap, path = new_path))
-		return result
-
-
-		return path
-
 	def _traverseDFS(origin, linkmap):
 		"""
 		https://stackoverflow.com/questions/12864004/tracing-and-returning-a-path-in-depth-first-search
@@ -54,20 +42,6 @@ class Inspector(object):
 					gpath.append(path)
 
 		return gpath
-
-
-	@staticmethod
-	def _traverse(origin, linkmap, lpath=[], gpath=[]):
-		destinations = linkmap[origin]
-		for each in destinations:
-			dest = each.dest
-			tmp_path = copy.deepcopy(lpath)
-			tmp_path.append(dest)
-			if dest in linkmap:
-				Inspector._traverse(dest, linkmap, lpath=tmp_path, gpath=gpath)
-			else:
-				gpath.append(tmp_path)
-		return gpath
 				
 	@staticmethod
 	def _stringify_list(array):
@@ -79,9 +53,6 @@ class Inspector(object):
 	@staticmethod
 	def _stringify(array):
 		return ','.join(array)
-
-
-
 
 	def _get_most_connected(graph):
 		origins = list()
