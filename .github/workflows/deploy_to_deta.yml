@@ -10,6 +10,7 @@ jobs:
       - name: Unittest
         shell: bash
         run: |
+          pip install virtualenv
           make unittest
         
       # Install Deta CLI as per docs
